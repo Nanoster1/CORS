@@ -1,0 +1,22 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <button id="exploitGet" class="btn btn-primary">Get secret</button>
+</div>
+
+<script>
+    document.getElementById('exploitGet').addEventListener('click', function ()
+    {
+        fetch('http://localhost:5000/exploit/get', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'X-Custom-Header': 'application/json'
+            }
+        }).then(resp => resp.text()).then(resp => alert(resp));
+    })
+</script>
