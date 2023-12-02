@@ -1,0 +1,123 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Simple / Hard Requests";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Test</h1>
+    <div class="container mt-5 flex gap-3">
+        <input id="input" type="text">
+        <button id="btn" class="btn btn-primary mt-2" type="button">Send hard request</button>
+        <button id="btn2" class="btn btn-primary mt-2" type="button">Send simple request</button>
+        <button id="btn3" class="btn btn-primary mt-2" type="button">Send broken hard request</button>
+        <button id="btn4" class="btn btn-primary mt-2" type="button">Send simple request without CORS</button>
+        <button id="btn5" class="btn btn-primary mt-2" type="button">Send request with invalid header</button>
+        <button id="btn6" class="btn btn-primary mt-2" type="button">Send request with exposed header</button>
+        <button id="btn7" class="btn btn-primary mt-2" type="button">Send request with valid header</button>
+        <button id="btn8" class="btn btn-primary mt-2" type="button">Send request with unaccepted method</button>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('btn');
+    const btn2 = document.getElementById('btn2');
+    const btn3 = document.getElementById('btn3');
+    const btn4 = document.getElementById('btn4');
+    const btn5 = document.getElementById('btn5');
+    const btn6 = document.getElementById('btn6');
+    const btn7 = document.getElementById('btn7');
+    const btn8 = document.getElementById('btn8');
+    const input = document.getElementById('input');
+
+    btn.addEventListener('click', () =>
+    {
+        fetch(
+            'http://localhost:5000/test/hard',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Str: input.value }),
+                mode: 'cors'
+            }
+        ).then(resp => resp.text()).then(resp => alert(resp));
+    });
+
+    btn2.addEventListener('click', () =>
+    {
+        fetch(
+            'http://localhost:5000/test/simple',
+            {
+                method: 'GET'
+            }
+        ).then(resp => resp.text()).then(resp => alert(resp));
+    });
+
+    btn3.addEventListener('click', () =>
+    {
+        fetch(
+            'http://localhost:5000/test/broken',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Str: input.value })
+            }
+        ).then(resp => resp.text()).then(resp => alert(resp));
+    });
+
+    btn4.addEventListener('click', () =>
+    {
+        fetch(
+            'http://localhost:5000/test/simple-no-cors',
+            {
+                method: 'GET'
+            }
+        ).then(resp => resp.text()).then(resp => alert(resp));
+    });
+
+    btn5.addEventListener('click', () =>
+    {
+        fetch(
+            'http://localhost:5000/test/custom-header',
+            {
+                method: 'POST',
+                headers: { 'X-Custom-Header': input.value }
+            }
+        ).then(resp => resp.text()).then(resp => alert(resp));
+    });
+
+    btn6.addEventListener('click', () =>
+    {
+        fetch(
+            'http://localhost:5000/test/exposed-header',
+            {
+                method: 'GET',
+                headers: { 'X-Custom-Header': input.value }
+            }
+        ).then(resp => resp.headers.get('X-Custom-Header')).then(resp => eval(`alert('${resp}');`));
+    });
+
+    btn7.addEventListener('click', () =>
+    {
+        fetch(
+            'http://localhost:5000/test/valid-header',
+            {
+                method: 'GET',
+                headers: { 'X-Custom-Header': input.value }
+            }
+        ).then(resp => resp.text()).then(resp => alert(resp));
+    });
+
+    btn8.addEventListener('click', () =>
+    {
+        fetch(
+            'http://localhost:5000/test/unaccepted-method',
+            {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Str: input.value })
+            }
+        ).then(resp => resp.text()).then(resp => alert(resp));
+    });
+
+</script>
